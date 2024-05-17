@@ -6,21 +6,24 @@ import '../demo_screen.dart';
 import 'dash.dart';
 
 class Sky extends StatelessWidget {
+  const Sky({super.key});
+
   @override
   Widget build(BuildContext context) {
     final tween = _createTween();
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return LoopAnimation<TimelineValue<_P>>(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return LoopAnimation<TimelineValue<_P>>(
           tween: tween,
           duration: tween.duration,
           builder: (context, child, value) {
-            var otherDashes = value.get<double>(_P.otherDashes);
+            final otherDashes = value.get<double>(_P.otherDashes);
 
             return Stack(
               children: [
-                Positioned.fill(child: SkyGradient()),
-                Positioned.fill(child: CloudsPlasma()),
+                const Positioned.fill(child: SkyGradient()),
+                const Positioned.fill(child: CloudsPlasma()),
                 if (otherDashes > 0)
                   Positioned.fill(child: OtherDashes(otherDashes)),
                 Positioned(
@@ -30,30 +33,33 @@ class Sky extends StatelessWidget {
                   height: value.get<double>(_P.size1) * constraints.maxWidth,
                   child: Transform.rotate(
                     angle: value.get(_P.rotate1),
-                    child: DashAnimation(),
+                    child: const DashAnimation(),
                   ),
                 ),
-                Positioned.fill(child: ForegroundCloudsPlasma()),
+                const Positioned.fill(child: ForegroundCloudsPlasma()),
               ],
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 }
 
 class OtherDashes extends StatelessWidget {
-  OtherDashes(this.otherDashes);
+  const OtherDashes(this.otherDashes, {super.key});
 
   final double otherDashes;
 
   @override
   Widget build(BuildContext context) {
     return MirrorAnimation<double>(
-        tween: 0.0.tweenTo(1.0),
-        duration: 300.milliseconds,
-        builder: (context, child, value) {
-          return CustomPaint(painter: MultiDashPainter(otherDashes, value));
-        });
+      tween: 0.0.tweenTo(1.0),
+      duration: 300.milliseconds,
+      builder: (context, child, value) {
+        return CustomPaint(painter: MultiDashPainter(otherDashes, value));
+      },
+    );
   }
 }
 
@@ -64,69 +70,75 @@ TimelineTween<_P> _createTween() {
 
   tween
       .addScene(
-        begin: (0.0 * MUSIC_UNIT_MS).round().milliseconds,
-        end: (0.25 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.0 * musicUnitMs).round().milliseconds,
+        end: (0.25 * musicUnitMs).round().milliseconds,
         curve: Curves.easeOut,
       )
-      .animate(_P.left1, tween: (1.05).tweenTo(0.2))
-      .animate(_P.top1, tween: (0.6).tweenTo(0.3))
-      .animate(_P.size1, tween: (0.4).tweenTo(0.3));
+      .animate(_P.left1, tween: 1.05.tweenTo(0.2))
+      .animate(_P.top1, tween: 0.6.tweenTo(0.3))
+      .animate(_P.size1, tween: 0.4.tweenTo(0.3));
 
   tween
       .addScene(
-          begin: (0.25 * MUSIC_UNIT_MS).round().milliseconds,
-          end: (0.5 * MUSIC_UNIT_MS).round().milliseconds,
-          curve: Curves.easeInOut)
-      .animate(_P.left1, tween: (0.2).tweenTo(0.3))
-      .animate(_P.top1, tween: (0.3).tweenTo(0.4))
-      .animate(_P.size1, tween: (0.3).tweenTo(0.35));
+        begin: (0.25 * musicUnitMs).round().milliseconds,
+        end: (0.5 * musicUnitMs).round().milliseconds,
+        curve: Curves.easeInOut,
+      )
+      .animate(_P.left1, tween: 0.2.tweenTo(0.3))
+      .animate(_P.top1, tween: 0.3.tweenTo(0.4))
+      .animate(_P.size1, tween: 0.3.tweenTo(0.35));
 
   tween
       .addScene(
-          begin: (0.5 * MUSIC_UNIT_MS).round().milliseconds,
-          end: (0.75 * MUSIC_UNIT_MS).round().milliseconds,
-          curve: Curves.easeInOut)
-      .animate(_P.left1, tween: (0.3).tweenTo(0.2))
-      .animate(_P.top1, tween: (0.4).tweenTo(0.3))
-      .animate(_P.size1, tween: (0.35).tweenTo(0.3));
+        begin: (0.5 * musicUnitMs).round().milliseconds,
+        end: (0.75 * musicUnitMs).round().milliseconds,
+        curve: Curves.easeInOut,
+      )
+      .animate(_P.left1, tween: 0.3.tweenTo(0.2))
+      .animate(_P.top1, tween: 0.4.tweenTo(0.3))
+      .animate(_P.size1, tween: 0.35.tweenTo(0.3));
 
   tween
       .addScene(
-        begin: (0.50 * MUSIC_UNIT_MS).round().milliseconds,
-        end: (1.0 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.50 * musicUnitMs).round().milliseconds,
+        end: (1.0 * musicUnitMs).round().milliseconds,
         curve: Curves.easeOut,
       )
-      .animate(_P.otherDashes, tween: (0.0).tweenTo(1.0));
+      .animate(_P.otherDashes, tween: 0.0.tweenTo(1.0));
 
   final fallIntoSwarm = tween
       .addScene(
-        begin: (0.75 * MUSIC_UNIT_MS).round().milliseconds,
-        end: (0.83 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.75 * musicUnitMs).round().milliseconds,
+        end: (0.83 * musicUnitMs).round().milliseconds,
         curve: Curves.easeOut,
       )
-      .animate(_P.rotate1,
-          tween: (0.1).tweenTo(0.35),
-          shiftEnd: -400.milliseconds,
-          curve: Curves.easeInOut)
-      .animate(_P.left1, tween: (0.2).tweenTo(0.35))
-      .animate(_P.top1, tween: (0.3).tweenTo(0.4))
-      .animate(_P.size1, tween: (0.3).tweenTo(0.2));
+      .animate(
+        _P.rotate1,
+        tween: 0.1.tweenTo(0.35),
+        shiftEnd: -400.milliseconds,
+        curve: Curves.easeInOut,
+      )
+      .animate(_P.left1, tween: 0.2.tweenTo(0.35))
+      .animate(_P.top1, tween: 0.3.tweenTo(0.4))
+      .animate(_P.size1, tween: 0.3.tweenTo(0.2));
 
   fallIntoSwarm
-      .addSubsequentScene(duration: (0.17 * MUSIC_UNIT_MS).round().milliseconds)
-      .animate(_P.top1, tween: (0.4).tweenTo(-0.8))
-      .animate(_P.left1, tween: (0.35).tweenTo(0.25));
+      .addSubsequentScene(duration: (0.17 * musicUnitMs).round().milliseconds)
+      .animate(_P.top1, tween: 0.4.tweenTo(-0.8))
+      .animate(_P.left1, tween: 0.35.tweenTo(0.25));
 
-  tween.addScene(end: (MUSIC_UNIT_MS).milliseconds, duration: 1.milliseconds);
+  tween.addScene(end: musicUnitMs.milliseconds, duration: 1.milliseconds);
 
   return tween;
 }
 
 class SkyGradient extends StatelessWidget {
+  const SkyGradient({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment.topCenter,
@@ -147,9 +159,11 @@ class SkyGradient extends StatelessWidget {
 }
 
 class CloudsPlasma extends StatelessWidget {
+  const CloudsPlasma({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return PlasmaRenderer(
+    return const PlasmaRenderer(
       type: PlasmaType.bubbles,
       particles: 39,
       color: Color(0x44ffffff),
@@ -167,9 +181,11 @@ class CloudsPlasma extends StatelessWidget {
 }
 
 class ForegroundCloudsPlasma extends StatelessWidget {
+  const ForegroundCloudsPlasma({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return PlasmaRenderer(
+    return const PlasmaRenderer(
       type: PlasmaType.bubbles,
       particles: 10,
       color: Color(0x66ffffff),

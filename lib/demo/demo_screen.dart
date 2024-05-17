@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
+import 'audio.dart';
 import 'effects/shatter.dart';
 import 'fancy_plasma1/fancy_plasma1.dart';
 import 'fancy_plasma2/fancy_plasma2.dart';
@@ -13,13 +14,14 @@ import 'sky/sky.dart';
 import 'stars/stars.dart';
 import 'startpage/start_page.dart';
 
-import 'audio.dart';
-
 class DemoScreen extends StatefulWidget {
+  const DemoScreen({
+    required this.onComplete,
+    required this.showCredits,
+    super.key,
+  });
   final VoidCallback onComplete;
   final bool showCredits;
-
-  const DemoScreen({required this.onComplete, required this.showCredits});
 
   @override
   _DemoScreenState createState() => _DemoScreenState();
@@ -28,20 +30,20 @@ class DemoScreen extends StatefulWidget {
 class _DemoScreenState extends State<DemoScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer('assets/assets/music.mp3');
 
-  var control = CustomAnimationControl.STOP;
+  CustomAnimationControl control = CustomAnimationControl.stop;
 
-  var widgets = <Widget>[];
+  List<Widget> widgets = <Widget>[];
 
   @override
   void initState() {
     widgets = <Widget>[
       Container(),
-      Intro(),
-      FancyPlasma1(),
-      LayoutWall(),
-      FancyPlasma2(),
-      Sky(),
-      Stars(),
+      const Intro(),
+      const FancyPlasma1(),
+      const LayoutWall(),
+      const FancyPlasma2(),
+      const Sky(),
+      const Stars(),
       Container(),
       Outro(onComplete: widget.onComplete),
     ];
@@ -49,21 +51,21 @@ class _DemoScreenState extends State<DemoScreen> {
     super.initState();
   }
 
-  void _start(Function shatterFn) async {
+  Future<void> _start(Function shatterFn) async {
     if (kIsWeb) {
       await _audioPlayer.play();
 
       while (true) {
-        final position = await _audioPlayer.position;
+        final position = _audioPlayer.position;
         if (position > 0.seconds) {
-          setState(() => control = CustomAnimationControl.PLAY_FROM_START);
+          setState(() => control = CustomAnimationControl.playFromStart);
           shatterFn();
           break;
         }
         await 1.milliseconds.delay;
       }
     } else {
-      setState(() => control = CustomAnimationControl.PLAY_FROM_START);
+      setState(() => control = CustomAnimationControl.playFromStart);
       shatterFn();
     }
   }
@@ -78,7 +80,7 @@ class _DemoScreenState extends State<DemoScreen> {
         tween: tween,
         duration: tween.duration,
         builder: (context, child, value) {
-          var widgetIndex = value.get<int>(_P.widgetIndex);
+          final widgetIndex = value.get<int>(_P.widgetIndex);
           return Container(
             color: Colors.black,
             child: Stack(
@@ -117,33 +119,36 @@ TimelineTween<_P> _createTween(bool withCredits) {
       .animate(_P.widgetIndex, tween: ConstantTween<int>(0));
 
   final message = intro
-      .addSubsequentScene(duration: MUSIC_UNIT_MS.milliseconds)
+      .addSubsequentScene(duration: musicUnitMs.milliseconds)
       .animate(_P.widgetIndex, tween: ConstantTween<int>(1));
 
   final plasmas = tween
       .addScene(
-          begin: 13068.milliseconds,
-          duration: (2 * MUSIC_UNIT_MS).round().milliseconds)
+        begin: 13068.milliseconds,
+        duration: (2 * musicUnitMs).round().milliseconds,
+      )
       .animate(_P.widgetIndex, tween: ConstantTween<int>(2));
 
   final layoutWall = tween
       .addScene(
-          begin: 25414.milliseconds,
-          duration: (2 * MUSIC_UNIT_MS).round().milliseconds)
+        begin: 25414.milliseconds,
+        duration: (2 * musicUnitMs).round().milliseconds,
+      )
       .animate(_P.widgetIndex, tween: ConstantTween<int>(3));
 
   final plasmaComposition = tween
       .addScene(
-          begin: 37728.milliseconds,
-          duration: (2 * MUSIC_UNIT_MS).round().milliseconds)
+        begin: 37728.milliseconds,
+        duration: (2 * musicUnitMs).round().milliseconds,
+      )
       .animate(_P.widgetIndex, tween: ConstantTween<int>(4));
 
   final sky = plasmaComposition
-      .addSubsequentScene(duration: MUSIC_UNIT_MS.milliseconds)
+      .addSubsequentScene(duration: musicUnitMs.milliseconds)
       .animate(_P.widgetIndex, tween: ConstantTween<int>(5));
 
   final space = sky
-      .addSubsequentScene(duration: MUSIC_UNIT_MS.milliseconds)
+      .addSubsequentScene(duration: musicUnitMs.milliseconds)
       .animate(_P.widgetIndex, tween: ConstantTween<int>(6));
 
   final dark = space
@@ -151,14 +156,14 @@ TimelineTween<_P> _createTween(bool withCredits) {
       .animate(_P.widgetIndex, tween: ConstantTween<int>(7));
 
   if (withCredits) {
-    var outro = tween
+    final outro = tween
         .addScene(begin: 66275.milliseconds, end: 91532.milliseconds)
         .animate(_P.widgetIndex, tween: ConstantTween<int>(8));
 
-    var end = tween.addScene(begin: 94.seconds, duration: 1.milliseconds);
+    final end = tween.addScene(begin: 94.seconds, duration: 1.milliseconds);
   }
 
   return tween;
 }
 
-const MUSIC_UNIT_MS = 6165;
+const musicUnitMs = 6165;

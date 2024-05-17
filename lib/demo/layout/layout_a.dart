@@ -5,64 +5,68 @@ import 'package:supercharged/supercharged.dart';
 import 'colors.dart';
 
 class LayoutA extends StatelessWidget {
+  const LayoutA({super.key, this.start = 0.0});
   final double start;
-
-  LayoutA({this.start = 0.0});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, outerConstraints) {
-      final gap = 0.025 * outerConstraints.maxWidth;
+    return LayoutBuilder(
+      builder: (context, outerConstraints) {
+        final gap = 0.025 * outerConstraints.maxWidth;
 
-      return Container(
-        padding: EdgeInsets.all(2 * gap),
-        decoration: BoxDecoration(
-          color: grey1,
-          borderRadius: BorderRadius.all(Radius.circular(gap)),
-        ),
-        child: LayoutBuilder(builder: (context, constraints) {
-          final tween = _createTween(constraints.maxWidth, gap);
+        return Container(
+          padding: EdgeInsets.all(2 * gap),
+          decoration: BoxDecoration(
+            color: grey1,
+            borderRadius: BorderRadius.all(Radius.circular(gap)),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final tween = _createTween(constraints.maxWidth, gap);
 
-          return CustomAnimation<TimelineValue<_P>>(
-              control: CustomAnimationControl.LOOP,
-              startPosition: start,
-              tween: tween,
-              duration: tween.duration,
-              builder: (context, child, value) {
-                return Container(
-                  child: Stack(
+              return CustomAnimation<TimelineValue<_P>>(
+                control: CustomAnimationControl.loop,
+                startPosition: start,
+                tween: tween,
+                duration: tween.duration,
+                builder: (context, child, value) {
+                  return Stack(
                     children: [
                       Positioned(
-                          left: value.get(_P.left1),
-                          top: value.get(_P.top1),
-                          width: value.get(_P.width1),
-                          height: value.get(_P.height1),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: grey2,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(gap)),
-                            ),
-                          )),
+                        left: value.get(_P.left1),
+                        top: value.get(_P.top1),
+                        width: value.get(_P.width1),
+                        height: value.get(_P.height1),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: grey2,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(gap)),
+                          ),
+                        ),
+                      ),
                       Positioned(
-                          left: value.get(_P.left2),
-                          top: value.get(_P.top2),
-                          width: value.get(_P.width2),
-                          height: value.get(_P.height2),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: grey2,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(gap)),
-                            ),
-                          ))
+                        left: value.get(_P.left2),
+                        top: value.get(_P.top2),
+                        width: value.get(_P.width2),
+                        height: value.get(_P.height2),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: grey2,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(gap)),
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
-                );
-              });
-        }),
-      );
-    });
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -104,12 +108,12 @@ TimelineTween<_P> _createTween(double size, double gap) {
 
   step4
       .addSubsequentScene(delay: 1000.milliseconds, duration: 700.milliseconds)
-      .animate(_P.width1, tween: (size).tweenTo(size * 0.5 - gap))
+      .animate(_P.width1, tween: size.tweenTo(size * 0.5 - gap))
       .animate(_P.height1, tween: (size * 0.2 - gap).tweenTo(size * 0.5 - gap))
       .animate(_P.top2, tween: (0.2 * size + gap).tweenTo(0.5 * size + gap))
-      .animate(_P.left2, tween: (0.0).tweenTo(0.5 * size + gap))
+      .animate(_P.left2, tween: 0.0.tweenTo(0.5 * size + gap))
       .animate(_P.height2, tween: (0.8 * size - gap).tweenTo(0.5 * size - gap))
-      .animate(_P.width2, tween: (size).tweenTo(0.5 * size - gap));
+      .animate(_P.width2, tween: size.tweenTo(0.5 * size - gap));
 
   return tween;
 }

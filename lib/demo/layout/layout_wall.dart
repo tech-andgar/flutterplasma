@@ -11,13 +11,16 @@ import 'layout_c.dart';
 import 'layout_d.dart';
 
 class LayoutWall extends StatelessWidget {
+  const LayoutWall({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final size = Size(constraints.maxWidth, constraints.maxHeight);
-      final tween = _createTween(size);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = Size(constraints.maxWidth, constraints.maxHeight);
+        final tween = _createTween(size);
 
-      return PlayAnimation<TimelineValue<_P>>(
+        return PlayAnimation<TimelineValue<_P>>(
           tween: tween,
           duration: tween.duration,
           builder: (context, child, value) {
@@ -33,7 +36,9 @@ class LayoutWall extends StatelessWidget {
                     scale: value.get(_P.scale),
                     child: Transform.translate(
                       offset: Offset(
-                          value.get(_P.translateX), value.get(_P.translateY)),
+                        value.get(_P.translateX),
+                        value.get(_P.translateY),
+                      ),
                       child: OverflowBox(
                         minWidth: constraints.maxWidth * 1.25,
                         maxWidth: constraints.maxWidth * 1.25,
@@ -48,8 +53,10 @@ class LayoutWall extends StatelessWidget {
                 ),
               ),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   List<Widget> _createGrid(BuildContext context, Size size) {
@@ -65,19 +72,21 @@ class LayoutWall extends StatelessWidget {
 
     0.until(itemsY).forEach((y) {
       0.until(itemsX).forEach((x) {
-        grid.add(Positioned(
-          left: x * itemSize,
-          top: y * itemSize,
-          width: itemSize,
-          height: itemSize,
-          child: Padding(
-            padding: EdgeInsets.all(itemSize * 0.1),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: _randomLayout(random),
+        grid.add(
+          Positioned(
+            left: x * itemSize,
+            top: y * itemSize,
+            width: itemSize,
+            height: itemSize,
+            child: Padding(
+              padding: EdgeInsets.all(itemSize * 0.1),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: _randomLayout(random),
+              ),
             ),
           ),
-        ));
+        );
       });
     });
 
@@ -93,24 +102,24 @@ TimelineTween<_P> _createTween(Size size) {
   final shift1 = size.width / 3 * 0.585;
 
   tween
-      .addScene(begin: 0.milliseconds, duration: MUSIC_UNIT_MS.milliseconds)
+      .addScene(begin: 0.milliseconds, duration: musicUnitMs.milliseconds)
       .animate(_P.scale, tween: 1.5.tweenTo(1.25))
-      .animate(_P.translateX, tween: (shift1).tweenTo(-shift1))
-      .animate(_P.translateY, tween: (0.0).tweenTo(shift1 / 2))
+      .animate(_P.translateX, tween: shift1.tweenTo(-shift1))
+      .animate(_P.translateY, tween: 0.0.tweenTo(shift1 / 2))
       .animate(_P.rotateX, tween: (-1.4).tweenTo(-0.4))
-      .animate(_P.rotateY, tween: (0.0).tweenTo(0.0));
+      .animate(_P.rotateY, tween: 0.0.tweenTo(0.0));
 
   tween
       .addScene(
-          begin: MUSIC_UNIT_MS.milliseconds,
-          duration: MUSIC_UNIT_MS.milliseconds)
+        begin: musicUnitMs.milliseconds,
+        duration: musicUnitMs.milliseconds,
+      )
       .animate(_P.scale, tween: 1.3.tweenTo(0.8), curve: Curves.easeOut)
       .animate(_P.translateX, tween: (-shift1 * 1.2).tweenTo(0))
       .animate(_P.rotateX, tween: (-0.0).tweenTo(-0.8))
-      .animate(_P.rotateY, tween: (1.0).tweenTo(0.0));
+      .animate(_P.rotateY, tween: 1.0.tweenTo(0.0));
 
-  tween.addScene(
-      end: (2 * MUSIC_UNIT_MS).milliseconds, duration: 1.milliseconds);
+  tween.addScene(end: (2 * musicUnitMs).milliseconds, duration: 1.milliseconds);
 
   return tween;
 }

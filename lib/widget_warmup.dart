@@ -4,12 +4,11 @@ import 'showroom/show_room.dart';
 
 /// Warms up renderer by rendering each widget for a single frame
 class WidgetWarmup extends StatefulWidget {
+  const WidgetWarmup({required this.child, super.key});
   final Widget child;
 
-  const WidgetWarmup({required this.child});
-
   @override
-  _WidgetWarmupState createState() => _WidgetWarmupState();
+  State<WidgetWarmup> createState() => _WidgetWarmupState();
 }
 
 class _WidgetWarmupState extends State<WidgetWarmup> {
@@ -18,7 +17,7 @@ class _WidgetWarmupState extends State<WidgetWarmup> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _afterRender(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _afterRender(context));
   }
 
   @override
@@ -26,7 +25,7 @@ class _WidgetWarmupState extends State<WidgetWarmup> {
     if (!_widgetsPrecached) {
       return Stack(
         children: [
-          ...WIDGETS.entries
+          ...widgets.entries
               .map((entry) => entry.value())
               .map((widget) => Positioned.fill(child: widget)),
           Positioned.fill(child: Container(color: Colors.white)),

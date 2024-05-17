@@ -8,14 +8,17 @@ import 'other_plasma1.dart';
 import 'other_plasma2.dart';
 
 class FancyPlasma1 extends StatelessWidget {
+  const FancyPlasma1({super.key});
+
   @override
   Widget build(BuildContext context) {
     final tween = _createTween();
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final ratio = constraints.maxWidth / constraints.maxHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final ratio = constraints.maxWidth / constraints.maxHeight;
 
-      return PlayAnimation<TimelineValue<_P>>(
+        return PlayAnimation<TimelineValue<_P>>(
           tween: tween,
           duration: tween.duration,
           builder: (context, child, value) {
@@ -23,48 +26,52 @@ class FancyPlasma1 extends StatelessWidget {
             final p2Scale = value.get<double>(_P.p2Scale);
 
             final p2 = Positioned.fill(
-              key: Key('p2'),
+              key: const Key('p2'),
               child: Transform.scale(
-                  alignment: Alignment.topLeft,
-                  scale: value.get(_P.p2Scale),
-                  child: AspectRatio(
-                    aspectRatio: ratio,
-                    child: _buildPlasma2(value),
-                  )),
+                alignment: Alignment.topLeft,
+                scale: value.get(_P.p2Scale),
+                child: AspectRatio(
+                  aspectRatio: ratio,
+                  child: _buildPlasma2(value),
+                ),
+              ),
             );
 
             final stackWidgets = <Widget>[
               if (p1Scale < 1 || p2Scale < 1)
                 Positioned.fill(
-                  key: Key('p3'),
+                  key: const Key('p3'),
                   child: Transform.scale(
-                      alignment: Alignment.topRight,
-                      scale: 0.5,
-                      child: AspectRatio(
-                        aspectRatio: ratio,
-                        child: OtherPlasma1(),
-                      )),
+                    alignment: Alignment.topRight,
+                    scale: 0.5,
+                    child: AspectRatio(
+                      aspectRatio: ratio,
+                      child: const OtherPlasma1(),
+                    ),
+                  ),
                 ),
               if (p1Scale < 1 || p2Scale < 1)
                 Positioned.fill(
-                  key: Key('p4'),
+                  key: const Key('p4'),
                   child: Transform.scale(
-                      alignment: Alignment.bottomLeft,
-                      scale: 0.5,
-                      child: AspectRatio(
-                        aspectRatio: ratio,
-                        child: OtherPlasma2(),
-                      )),
-                ),
-              Positioned.fill(
-                key: Key('p1'),
-                child: Transform.scale(
-                    alignment: Alignment.bottomRight,
-                    scale: value.get(_P.p1Scale),
+                    alignment: Alignment.bottomLeft,
+                    scale: 0.5,
                     child: AspectRatio(
                       aspectRatio: ratio,
-                      child: _buildPlasma1(value),
-                    )),
+                      child: const OtherPlasma2(),
+                    ),
+                  ),
+                ),
+              Positioned.fill(
+                key: const Key('p1'),
+                child: Transform.scale(
+                  alignment: Alignment.bottomRight,
+                  scale: value.get(_P.p1Scale),
+                  child: AspectRatio(
+                    aspectRatio: ratio,
+                    child: _buildPlasma1(value),
+                  ),
+                ),
               ),
             ];
 
@@ -79,8 +86,10 @@ class FancyPlasma1 extends StatelessWidget {
             return Stack(
               children: stackWidgets,
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   Widget _buildPlasma1(TimelineValue<_P> value) {
@@ -106,7 +115,7 @@ TimelineTween<_P> _createTween() {
   tween
       .addScene(
         duration: 200.milliseconds,
-        begin: (0.25 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.25 * musicUnitMs).round().milliseconds,
         curve: Curves.easeIn,
       )
       .animate(_P.p1Color, tween: red.tweenTo(blue));
@@ -115,7 +124,7 @@ TimelineTween<_P> _createTween() {
   tween
       .addScene(
         duration: 200.milliseconds,
-        begin: (0.5 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.5 * musicUnitMs).round().milliseconds,
         curve: Curves.easeIn,
       )
       .animate(_P.p1Color, tween: blue.tweenTo(yellow));
@@ -124,7 +133,7 @@ TimelineTween<_P> _createTween() {
   tween
       .addScene(
         duration: 200.milliseconds,
-        begin: (0.75 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.75 * musicUnitMs).round().milliseconds,
         curve: Curves.easeIn,
       )
       .animate(_P.p1Color, tween: yellow.tweenTo(green));
@@ -132,16 +141,17 @@ TimelineTween<_P> _createTween() {
   // Unit swap
   tween
       .addScene(
-        begin: (0.75 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (0.75 * musicUnitMs).round().milliseconds,
         duration: 500.milliseconds,
         curve: Curves.easeInOut,
       )
       .animate(_P.p1Scale, tween: 1.0.tweenTo(0.5));
   tween
       .addScene(
-          duration: 500.milliseconds,
-          begin: (1.0 * MUSIC_UNIT_MS).round().milliseconds,
-          curve: Curves.easeInOut)
+        duration: 500.milliseconds,
+        begin: (1.0 * musicUnitMs).round().milliseconds,
+        curve: Curves.easeInOut,
+      )
       .animate(
         _P.p2Scale,
         tween: 0.5.tweenTo(1.0),
@@ -150,8 +160,8 @@ TimelineTween<_P> _createTween() {
   // B1 -> B2 (no gong)
   tween
       .addScene(
-        begin: (1.2 * MUSIC_UNIT_MS).round().milliseconds,
-        end: (1.3 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (1.2 * musicUnitMs).round().milliseconds,
+        end: (1.3 * musicUnitMs).round().milliseconds,
       )
       .animate(_P.p2Color, tween: green.tweenTo(red));
 
@@ -159,7 +169,7 @@ TimelineTween<_P> _createTween() {
   tween
       .addScene(
         duration: 200.milliseconds,
-        begin: (1.5 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (1.5 * musicUnitMs).round().milliseconds,
         curve: Curves.easeIn,
       )
       .animate(_P.p2Color, tween: red.tweenTo(blue));
@@ -168,13 +178,12 @@ TimelineTween<_P> _createTween() {
   tween
       .addScene(
         duration: 200.milliseconds,
-        begin: (1.75 * MUSIC_UNIT_MS).round().milliseconds,
+        begin: (1.75 * musicUnitMs).round().milliseconds,
         curve: Curves.easeIn,
       )
       .animate(_P.p2Color, tween: blue.tweenTo(yellow));
 
-  tween.addScene(
-      end: (2 * MUSIC_UNIT_MS).milliseconds, duration: 1.milliseconds);
+  tween.addScene(end: (2 * musicUnitMs).milliseconds, duration: 1.milliseconds);
 
   return tween;
 }

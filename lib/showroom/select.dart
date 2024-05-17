@@ -4,12 +4,15 @@ import 'package:supercharged/supercharged.dart';
 import 'gesture_detector_with_click_hover.dart';
 
 class PropertySelect extends StatelessWidget {
+  const PropertySelect({
+    required this.onChanged,
+    required this.value,
+    required this.options,
+    super.key,
+  });
   final Function(String?) onChanged;
   final String value;
   final List<String> options;
-
-  PropertySelect(
-      {required this.onChanged, required this.value, required this.options});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class PropertySelect extends StatelessWidget {
         MyIconButton(
           icon: Icons.navigate_next,
           onPressed: () => _nextOption(1),
-        )
+        ),
       ],
     );
   }
@@ -44,7 +47,7 @@ class PropertySelect extends StatelessWidget {
   }
 
   void _nextOption(int delta) {
-    var sortedOptions = options;
+    final sortedOptions = options;
     var index = sortedOptions.indexWhere((entry) => entry == value) + delta;
 
     if (index == sortedOptions.length) {
@@ -59,21 +62,20 @@ class PropertySelect extends StatelessWidget {
   }
 }
 
-var whiteRegular =
+TextStyle whiteRegular =
     const TextStyle(fontFamily: 'Work Sans', color: Colors.white, fontSize: 16);
 
 class MyIconButton extends StatelessWidget {
+  const MyIconButton({required this.icon, required this.onPressed, super.key});
   final IconData icon;
   final void Function() onPressed;
-
-  const MyIconButton({required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetectorWithClickHover(
       onTap: onPressed,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Icon(icon, size: 24, color: Colors.white),
       ),
     );

@@ -8,11 +8,14 @@ import '../demo_screen.dart';
 import 'large_text.dart';
 
 class Intro extends StatelessWidget {
+  const Intro({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final tween = _createTween(constraints);
-      return PlayAnimation<TimelineValue<_P>>(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tween = _createTween(constraints);
+        return PlayAnimation<TimelineValue<_P>>(
           tween: tween,
           duration: tween.duration,
           builder: (context, child, value) {
@@ -25,23 +28,26 @@ class Intro extends StatelessWidget {
                   Positioned.fill(child: _buildBackground(value)),
                   if (textFadeOut < 1)
                     Positioned.fill(
-                        child: Opacity(
-                      opacity: 1 - textFadeOut,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: _buildText(constraints, value),
+                      child: Opacity(
+                        opacity: 1 - textFadeOut,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: _buildText(constraints, value),
+                        ),
                       ),
-                    ))
+                    ),
                 ],
               ),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   Container _buildBackground(TimelineValue<_P> value) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment.topCenter,
@@ -60,7 +66,7 @@ class Intro extends StatelessWidget {
       child: PlasmaRenderer(
         type: PlasmaType.infinity,
         particles: 10,
-        color: Color(0x0dec2f0a),
+        color: const Color(0x0dec2f0a),
         blur: 0.4,
         size: 1,
         speed: value.get(_P.plasmaSpeed),
@@ -74,16 +80,18 @@ class Intro extends StatelessWidget {
     );
   }
 
-  Container _buildText(BoxConstraints constraints, TimelineValue<_P> value) {
-    final size = Size(constraints.maxWidth / 2,
-        min(constraints.maxHeight / 3, constraints.maxWidth / 3));
+  Widget _buildText(BoxConstraints constraints, TimelineValue<_P> value) {
+    final size = Size(
+      constraints.maxWidth / 2,
+      min(constraints.maxHeight / 3, constraints.maxWidth / 3),
+    );
     final textSize = size.width * 0.1;
 
     final t1fade = value.get<double>(_P.t1fade);
     final t2fade = value.get<double>(_P.t2fade);
     final t3fade = value.get<double>(_P.t3fade);
 
-    return Container(
+    return SizedBox(
       width: size.width,
       height: size.height,
       child: Transform.rotate(
@@ -91,34 +99,43 @@ class Intro extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-                child: Opacity(
-              opacity: t1fade,
-              child: Transform.rotate(
+              child: Opacity(
+                opacity: t1fade,
+                child: Transform.rotate(
                   angle: t1fade * -0.12,
-                  child: LargeText('time to', textSize: textSize)),
-            )),
+                  child: LargeText('time to', textSize: textSize),
+                ),
+              ),
+            ),
             Positioned(
               left: 0,
               right: 0,
               top: size.height / 2.1 - textSize * 0.75,
               child: Center(
-                  child: Transform.scale(
-                      scale: t2fade,
-                      child: LargeText('reimagine',
-                          textSize: textSize * 1.5, bold: true))),
+                child: Transform.scale(
+                  scale: t2fade,
+                  child: LargeText(
+                    'reimagine',
+                    textSize: textSize * 1.5,
+                    bold: true,
+                  ),
+                ),
+              ),
             ),
             Positioned(
-                right: size.width * 0.05,
-                bottom: 0,
-                child: Opacity(
-                  opacity: t3fade,
-                  child: Transform.translate(
-                    offset: Offset(size.width * 0.1 * (1 - t3fade), 0),
-                    child: Transform.rotate(
-                        angle: t3fade * 0.05,
-                        child: LargeText('web graphics', textSize: textSize)),
+              right: size.width * 0.05,
+              bottom: 0,
+              child: Opacity(
+                opacity: t3fade,
+                child: Transform.translate(
+                  offset: Offset(size.width * 0.1 * (1 - t3fade), 0),
+                  child: Transform.rotate(
+                    angle: t3fade * 0.05,
+                    child: LargeText('web graphics', textSize: textSize),
                   ),
-                )),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -149,7 +166,7 @@ TimelineTween<_P> _createTween(BoxConstraints constraints) {
         duration: 600.milliseconds,
         curve: Curves.easeOutCubic,
       )
-      .animate(_P.t1fade, tween: (0.0).tweenTo(1.0));
+      .animate(_P.t1fade, tween: 0.0.tweenTo(1.0));
 
   final t2 = t1
       .addSubsequentScene(
@@ -157,7 +174,7 @@ TimelineTween<_P> _createTween(BoxConstraints constraints) {
         duration: 600.milliseconds,
         curve: Curves.easeOutCubic,
       )
-      .animate(_P.t2fade, tween: (0.0).tweenTo(1.0));
+      .animate(_P.t2fade, tween: 0.0.tweenTo(1.0));
 
   final t3 = t2
       .addSubsequentScene(
@@ -165,34 +182,39 @@ TimelineTween<_P> _createTween(BoxConstraints constraints) {
         duration: 600.milliseconds,
         curve: Curves.easeOutCubic,
       )
-      .animate(_P.t3fade, tween: (0.0).tweenTo(1.0));
+      .animate(_P.t3fade, tween: 0.0.tweenTo(1.0));
 
   tween
       .addScene(
-          begin: (0.75 * MUSIC_UNIT_MS).round().milliseconds,
-          end: (1.75 * MUSIC_UNIT_MS).round().milliseconds)
+        begin: (0.75 * musicUnitMs).round().milliseconds,
+        end: (1.75 * musicUnitMs).round().milliseconds,
+      )
       .animate(
         _P.textRotate,
         tween: 0.0.tweenTo(30 * 2 * pi),
-        curve: _CustomExponentialCurve(),
+        curve: const _CustomExponentialCurve(),
       );
 
   tween
       .addScene(
-          begin: (1.25 * MUSIC_UNIT_MS).round().milliseconds,
-          end: (1.75 * MUSIC_UNIT_MS).round().milliseconds,
-          curve: Curves.easeIn)
+        begin: (1.25 * musicUnitMs).round().milliseconds,
+        end: (1.75 * musicUnitMs).round().milliseconds,
+        curve: Curves.easeIn,
+      )
       .animate(_P.textFadeOut, tween: 0.0.tweenTo(1.0));
 
   tween
       .addScene(
-          begin: MUSIC_UNIT_MS.milliseconds,
-          duration: 3.seconds,
-          curve: Curves.easeIn)
+        begin: musicUnitMs.milliseconds,
+        duration: 3.seconds,
+        curve: Curves.easeIn,
+      )
       .animate(_P.plasmaSpeed, tween: 0.0.tweenTo(50.0));
 
   tween.addScene(
-      begin: (2 * MUSIC_UNIT_MS).milliseconds, duration: 1.milliseconds);
+    begin: (2 * musicUnitMs).milliseconds,
+    duration: 1.milliseconds,
+  );
 
   return tween;
 }

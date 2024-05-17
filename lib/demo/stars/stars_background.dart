@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class StarsBackground extends StatelessWidget {
+  const StarsBackground({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment(-0.4, -1.0),
@@ -24,7 +26,7 @@ class StarsBackground extends StatelessWidget {
       child: PlasmaRenderer(
         type: PlasmaType.infinity,
         particles: 10,
-        color: Color(0x18c537cf),
+        color: const Color(0x18c537cf),
         blur: 0.34,
         size: 0.88,
         speed: 0,
@@ -37,7 +39,7 @@ class StarsBackground extends StatelessWidget {
         child: PlasmaRenderer(
           type: PlasmaType.infinity,
           particles: 10,
-          color: Color(0x06bababa),
+          color: const Color(0x06bababa),
           blur: 0.4,
           size: 1,
           speed: 0,
@@ -48,7 +50,7 @@ class StarsBackground extends StatelessWidget {
           variation3: 0,
           rotation: 1.31,
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
                 radius: 0.95,

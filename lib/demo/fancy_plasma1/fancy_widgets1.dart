@@ -3,9 +3,9 @@ import 'package:simple_animations/simple_animations.dart';
 
 class FancyPlasmaWidget2 extends StatelessWidget {
   const FancyPlasmaWidget2({
-    Key? key,
     required this.color,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Color color;
 
@@ -15,13 +15,13 @@ class FancyPlasmaWidget2 extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
-          begin: Alignment(0.6, -1.0),
-          end: Alignment(-0.3, 1.0),
+          begin: const Alignment(0.6, -1.0),
+          end: const Alignment(-0.3, 1.0),
           colors: [
             color.withOpacity(1.0),
             color.withOpacity(1.0),
           ],
-          stops: [
+          stops: const [
             0,
             1,
           ],
@@ -48,16 +48,16 @@ class FancyPlasmaWidget2 extends StatelessWidget {
 
 class FancyPlasmaWidget1 extends StatelessWidget {
   const FancyPlasmaWidget1({
-    Key? key,
     required this.color,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment.topLeft,

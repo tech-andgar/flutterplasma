@@ -31,8 +31,10 @@ const dashSize = Size(dashWidth, dashHeight);
 Future<void> initializeDashPainter() async {
   final frames = <ui.Image>[];
   for (var i = 0; i < _framesPerAnimationCycle; i++) {
-    frames.add(await _paintOneFrame(i / _framesPerAnimationCycle)
-        .toImage(dashWidth.toInt(), dashHeight.toInt()));
+    frames.add(
+      await _paintOneFrame(i / _framesPerAnimationCycle)
+          .toImage(dashWidth.toInt(), dashHeight.toInt()),
+    );
   }
   _frames = frames;
 }
@@ -42,130 +44,173 @@ ui.Picture _paintOneFrame(double value) {
 
   final recorder = ui.PictureRecorder();
   final canvas = ui.Canvas(recorder, cullRect);
-  var feetPaint = Paint()
+  final feetPaint = Paint()
     ..strokeWidth = dashWidth * 0.01
     ..strokeCap = StrokeCap.round
     ..color = '#725D48'.toColor();
 
   // Left feet
-  var leftFeetStart = Offset(dashWidth * 0.53, dashHeight * 0.75);
-  var leftFeetVec =
+  const leftFeetStart = Offset(dashWidth * 0.53, dashHeight * 0.75);
+  final leftFeetVec =
       Offset(dashWidth * (0.01 + value * 0.02), dashHeight * 0.08);
-  var leftFeetMiddle = Offset(
-      leftFeetStart.dx + leftFeetVec.dx, leftFeetStart.dy + leftFeetVec.dy);
-  canvas.drawLine(leftFeetStart, leftFeetMiddle, feetPaint);
-  canvas.drawLine(
+  final leftFeetMiddle = Offset(
+    leftFeetStart.dx + leftFeetVec.dx,
+    leftFeetStart.dy + leftFeetVec.dy,
+  );
+  canvas
+    ..drawLine(leftFeetStart, leftFeetMiddle, feetPaint)
+    ..drawLine(
       leftFeetMiddle,
-      Offset(leftFeetMiddle.dx + dashWidth * -0.02,
-          leftFeetMiddle.dy + dashHeight * 0.05),
-      feetPaint);
-  canvas.drawLine(
+      Offset(
+        leftFeetMiddle.dx + dashWidth * -0.02,
+        leftFeetMiddle.dy + dashHeight * 0.05,
+      ),
+      feetPaint,
+    )
+    ..drawLine(
       leftFeetMiddle,
-      Offset(leftFeetMiddle.dx + dashWidth * 0,
-          leftFeetMiddle.dy + dashHeight * 0.06),
-      feetPaint);
-  canvas.drawLine(
+      Offset(
+        leftFeetMiddle.dx + dashWidth * 0,
+        leftFeetMiddle.dy + dashHeight * 0.06,
+      ),
+      feetPaint,
+    )
+    ..drawLine(
       leftFeetMiddle,
-      Offset(leftFeetMiddle.dx + dashWidth * 0.02,
-          leftFeetMiddle.dy + dashHeight * 0.05),
-      feetPaint);
+      Offset(
+        leftFeetMiddle.dx + dashWidth * 0.02,
+        leftFeetMiddle.dy + dashHeight * 0.05,
+      ),
+      feetPaint,
+    );
 
   // Tail
   final tailPath = Path()
     ..moveTo(dashWidth * 0.55, dashHeight * 0.6)
     ..lineTo(dashWidth * 0.75, dashHeight * 0.55)
     ..quadraticBezierTo(
-        dashWidth * 0.95, dashHeight * 0.55, dashWidth * 0.9, dashHeight * 0.6)
+      dashWidth * 0.95,
+      dashHeight * 0.55,
+      dashWidth * 0.9,
+      dashHeight * 0.6,
+    )
     ..quadraticBezierTo(
-        dashWidth * 0.95, dashHeight * 0.65, dashWidth * 0.9, dashHeight * 0.68)
+      dashWidth * 0.95,
+      dashHeight * 0.65,
+      dashWidth * 0.9,
+      dashHeight * 0.68,
+    )
     ..quadraticBezierTo(
-        dashWidth * 0.95, dashHeight * 0.75, dashWidth * 0.9, dashHeight * 0.75)
+      dashWidth * 0.95,
+      dashHeight * 0.75,
+      dashWidth * 0.9,
+      dashHeight * 0.75,
+    )
     ..close();
   canvas.drawPath(tailPath, tailPaint);
 
   // Body
   final bodyOval = Rect.fromCenter(
-      center: dashSize.center(Offset.zero),
-      width: dashWidth / (2.2 - 0.03 * value),
-      height: dashHeight / (2 - 0.03 * value));
-  canvas.drawOval(bodyOval, bodyPaint);
+    center: dashSize.center(Offset.zero),
+    width: dashWidth / (2.2 - 0.03 * value),
+    height: dashHeight / (2 - 0.03 * value),
+  );
+  canvas
+    ..drawOval(bodyOval, bodyPaint)
 
-  // Breast
-  canvas.save();
-  canvas.clipPath(Path()..addOval(bodyOval));
+    // Breast
+    ..save()
+    ..clipPath(Path()..addOval(bodyOval));
 
   final breastOval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.07 * dashWidth, 0.15 * dashHeight)),
-      width: dashWidth / 3,
-      height: dashHeight / 3);
-  canvas.drawOval(breastOval, breastPaint);
-  canvas.restore();
+    center: dashSize.center(const Offset(-0.07 * dashWidth, 0.15 * dashHeight)),
+    width: dashWidth / 3,
+    height: dashHeight / 3,
+  );
+  canvas
+    ..drawOval(breastOval, breastPaint)
+    ..restore()
 
-  // Breast color
-  canvas.drawOval(
+    // Breast color
+    ..drawOval(
       Rect.fromCenter(
-          center: dashSize.center(Offset(
+        center: dashSize.center(
+          const Offset(
             dashWidth * -0.05,
             dashHeight * -0.07,
-          )),
-          width: dashWidth / 3.8,
-          height: dashHeight / 3),
-      bodyPaint);
+          ),
+        ),
+        width: dashWidth / 3.8,
+        height: dashHeight / 3,
+      ),
+      bodyPaint,
+    );
 
   // Eyes Outer
   final leftEyeOval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.1 * dashWidth, -0.05 * dashHeight)),
-      width: dashWidth / 6,
-      height: dashHeight / 5);
+    center: dashSize.center(const Offset(-0.1 * dashWidth, -0.05 * dashHeight)),
+    width: dashWidth / 6,
+    height: dashHeight / 5,
+  );
   canvas.drawOval(leftEyeOval, eyesOuterPaint);
 
   final rightEyeOval = Rect.fromCenter(
-      center: dashSize.center(Offset(0 * dashWidth, -0.05 * dashHeight)),
-      width: dashWidth / 6,
-      height: dashHeight / 5);
+    center: dashSize.center(const Offset(0 * dashWidth, -0.05 * dashHeight)),
+    width: dashWidth / 6,
+    height: dashHeight / 5,
+  );
   canvas.drawOval(rightEyeOval, eyesOuterPaint);
 
   // Eyes Inner
   final leftEyeInnerOval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.1 * dashWidth, -0.05 * dashHeight)),
-      width: dashWidth / 12,
-      height: dashHeight / 8);
+    center: dashSize.center(const Offset(-0.1 * dashWidth, -0.05 * dashHeight)),
+    width: dashWidth / 12,
+    height: dashHeight / 8,
+  );
   canvas.drawOval(leftEyeInnerOval, eyesInnerPaint);
 
   final rightEyeInnerOval = Rect.fromCenter(
-      center: dashSize.center(Offset(0 * dashWidth, -0.05 * dashHeight)),
-      width: dashWidth / 12,
-      height: dashHeight / 8);
+    center: dashSize.center(const Offset(0 * dashWidth, -0.05 * dashHeight)),
+    width: dashWidth / 12,
+    height: dashHeight / 8,
+  );
   canvas.drawOval(rightEyeInnerOval, eyesInnerPaint);
 
   // Eyes Reflection 1
   final leftEyeReflection1Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.11 * dashWidth, -0.03 * dashHeight)),
-      width: dashWidth / 50,
-      height: dashHeight / 50);
+    center:
+        dashSize.center(const Offset(-0.11 * dashWidth, -0.03 * dashHeight)),
+    width: dashWidth / 50,
+    height: dashHeight / 50,
+  );
   canvas.drawOval(leftEyeReflection1Oval, eyesReflectionPaint);
 
   final rightEyeReflection1Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.01 * dashWidth, -0.03 * dashHeight)),
-      width: dashWidth / 50,
-      height: dashHeight / 50);
+    center:
+        dashSize.center(const Offset(-0.01 * dashWidth, -0.03 * dashHeight)),
+    width: dashWidth / 50,
+    height: dashHeight / 50,
+  );
   canvas.drawOval(rightEyeReflection1Oval, eyesReflectionPaint);
 
   // Eyes Reflection 2
   final leftEyeReflection2Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(-0.09 * dashWidth, -0.07 * dashHeight)),
-      width: dashWidth / 80,
-      height: dashHeight / 80);
+    center:
+        dashSize.center(const Offset(-0.09 * dashWidth, -0.07 * dashHeight)),
+    width: dashWidth / 80,
+    height: dashHeight / 80,
+  );
   canvas.drawOval(leftEyeReflection2Oval, eyesReflectionPaint);
 
   final rightEyeReflection2Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(0.01 * dashWidth, -0.07 * dashHeight)),
-      width: dashWidth / 80,
-      height: dashHeight / 80);
+    center: dashSize.center(const Offset(0.01 * dashWidth, -0.07 * dashHeight)),
+    width: dashWidth / 80,
+    height: dashHeight / 80,
+  );
   canvas.drawOval(rightEyeReflection2Oval, eyesReflectionPaint);
 
   // Nose
-  final noseStart = Offset(dashWidth * 0.44, dashHeight * 0.5);
+  const noseStart = Offset(dashWidth * 0.44, dashHeight * 0.5);
   final nosePath = Path()
     ..moveTo(noseStart.dx, noseStart.dy)
     ..lineTo(noseStart.dx - dashWidth * 0.4, noseStart.dy + dashHeight * 0.03)
@@ -179,60 +224,82 @@ ui.Picture _paintOneFrame(double value) {
   canvas.drawPath(nosePath, nosePaint);
 
   // Right feet
-  final rightFeetStart = Offset(dashWidth * 0.62, dashHeight * 0.70);
+  const rightFeetStart = Offset(dashWidth * 0.62, dashHeight * 0.70);
   final rightFeetVec =
-      Offset(dashWidth * (0.02 + (value) * 0.015), dashHeight * 0.13);
+      Offset(dashWidth * (0.02 + value * 0.015), dashHeight * 0.13);
   final rightFeetMiddle = Offset(
-      rightFeetStart.dx + rightFeetVec.dx, rightFeetStart.dy + rightFeetVec.dy);
-  canvas.drawLine(rightFeetStart, rightFeetMiddle, feetPaint);
-  canvas.drawLine(
+    rightFeetStart.dx + rightFeetVec.dx,
+    rightFeetStart.dy + rightFeetVec.dy,
+  );
+  canvas
+    ..drawLine(rightFeetStart, rightFeetMiddle, feetPaint)
+    ..drawLine(
       rightFeetMiddle,
-      Offset(rightFeetMiddle.dx + dashWidth * -0.02,
-          rightFeetMiddle.dy + dashHeight * 0.06),
-      feetPaint);
-  canvas.drawLine(
+      Offset(
+        rightFeetMiddle.dx + dashWidth * -0.02,
+        rightFeetMiddle.dy + dashHeight * 0.06,
+      ),
+      feetPaint,
+    )
+    ..drawLine(
       rightFeetMiddle,
-      Offset(rightFeetMiddle.dx + dashWidth * 0,
-          rightFeetMiddle.dy + dashHeight * 0.07),
-      feetPaint);
-  canvas.drawLine(
+      Offset(
+        rightFeetMiddle.dx + dashWidth * 0,
+        rightFeetMiddle.dy + dashHeight * 0.07,
+      ),
+      feetPaint,
+    )
+    ..drawLine(
       rightFeetMiddle,
-      Offset(rightFeetMiddle.dx + dashWidth * 0.02,
-          rightFeetMiddle.dy + dashHeight * 0.06),
-      feetPaint);
+      Offset(
+        rightFeetMiddle.dx + dashWidth * 0.02,
+        rightFeetMiddle.dy + dashHeight * 0.06,
+      ),
+      feetPaint,
+    )
 
-  // Hair
-  canvas.save();
+    // Hair
+    ..save();
   final hairClipPath = Path()
     ..moveTo(dashWidth * 0.41, dashHeight * 0.35)
     ..quadraticBezierTo(
-        dashWidth * 0.5, dashHeight * 0.2, dashWidth * 0.6, dashHeight * 0.3)
+      dashWidth * 0.5,
+      dashHeight * 0.2,
+      dashWidth * 0.6,
+      dashHeight * 0.3,
+    )
     ..lineTo(dashWidth, 0)
     ..lineTo(0, 0)
     ..close();
   canvas.clipPath(hairClipPath);
 
   final hair1Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(dashWidth * -0.05, dashHeight * -0.22)),
-      width: dashWidth / 15,
-      height: dashHeight / 15);
+    center:
+        dashSize.center(const Offset(dashWidth * -0.05, dashHeight * -0.22)),
+    width: dashWidth / 15,
+    height: dashHeight / 15,
+  );
   canvas.drawOval(hair1Oval, eyesOuterPaint);
 
   final hair2Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(dashWidth * -0.01, dashHeight * -0.23)),
-      width: dashWidth / 13,
-      height: dashHeight / 13);
+    center:
+        dashSize.center(const Offset(dashWidth * -0.01, dashHeight * -0.23)),
+    width: dashWidth / 13,
+    height: dashHeight / 13,
+  );
   canvas.drawOval(hair2Oval, eyesOuterPaint);
 
   final hair3Oval = Rect.fromCenter(
-      center: dashSize.center(Offset(dashWidth * 0.02, dashHeight * -0.23)),
-      width: dashWidth / 15,
-      height: dashHeight / 15);
-  canvas.drawOval(hair3Oval, eyesOuterPaint);
-  canvas.restore();
+    center: dashSize.center(const Offset(dashWidth * 0.02, dashHeight * -0.23)),
+    width: dashWidth / 15,
+    height: dashHeight / 15,
+  );
+  canvas
+    ..drawOval(hair3Oval, eyesOuterPaint)
+    ..restore();
 
   // Wing
-  final rightWing1 = Offset(dashWidth * 0.62, dashHeight * 0.52);
+  const rightWing1 = Offset(dashWidth * 0.62, dashHeight * 0.52);
   final rightWing2 = Offset(dashWidth * 0.9, dashHeight * (0.6 - 0.1 * value));
   final rightWingC1 = Offset(
     (rightWing1.dx + rightWing2.dx) / 2 + dashWidth * 0.2,
@@ -243,21 +310,34 @@ ui.Picture _paintOneFrame(double value) {
   final rightWingPath = Path()
     ..moveTo(rightWing1.dx, rightWing1.dy)
     ..quadraticBezierTo(
-        rightWingC1.dx, rightWingC1.dy, rightWing2.dx, rightWing2.dy)
+      rightWingC1.dx,
+      rightWingC1.dy,
+      rightWing2.dx,
+      rightWing2.dy,
+    )
     ..quadraticBezierTo(
-        rightWingC2.dx, rightWingC2.dy, rightWing1.dx, rightWing1.dy)
+      rightWingC2.dx,
+      rightWingC2.dy,
+      rightWing1.dx,
+      rightWing1.dy,
+    )
     ..close();
 
   canvas.save();
   final wingClipPath = Path()
     ..moveTo(dashWidth * 0.68, dashHeight * 0.48)
     ..quadraticBezierTo(
-        dashWidth * 0.63, dashHeight * 0.53, dashWidth * 0.7, dashHeight * 0.6)
+      dashWidth * 0.63,
+      dashHeight * 0.53,
+      dashWidth * 0.7,
+      dashHeight * 0.6,
+    )
     ..lineTo(dashWidth, dashHeight)
     ..lineTo(dashWidth, 0)
     ..close();
-  canvas.clipPath(wingClipPath);
-  canvas.drawPath(rightWingPath, eyesOuterPaint);
-  canvas.restore();
+  canvas
+    ..clipPath(wingClipPath)
+    ..drawPath(rightWingPath, eyesOuterPaint)
+    ..restore();
   return recorder.endRecording();
 }

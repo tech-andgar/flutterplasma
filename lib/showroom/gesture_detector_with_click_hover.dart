@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class GestureDetectorWithClickHover extends StatelessWidget {
+  const GestureDetectorWithClickHover({
+    required this.onTap,
+    required this.child,
+    super.key,
+  });
   final GestureTapCallback onTap;
   final Widget child;
-
-  const GestureDetectorWithClickHover(
-      {required this.onTap, required this.child});
 
   @override
   Widget build(BuildContext context) {

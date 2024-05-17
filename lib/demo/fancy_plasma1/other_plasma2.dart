@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class OtherPlasma2 extends StatelessWidget {
+  const OtherPlasma2({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment.topLeft,
@@ -21,7 +23,7 @@ class OtherPlasma2 extends StatelessWidget {
         ),
         backgroundBlendMode: BlendMode.srcOver,
       ),
-      child: PlasmaRenderer(
+      child: const PlasmaRenderer(
         type: PlasmaType.circle,
         particles: 10,
         color: Color(0x4423b9e4),

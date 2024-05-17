@@ -7,30 +7,30 @@ import 'package:supercharged/supercharged.dart';
 import 'dash_painter.dart';
 
 class DashAnimation extends StatelessWidget {
+  const DashAnimation({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MirrorAnimation<double>(
-        tween: 0.0.tweenTo(1.0),
-        duration: 300.milliseconds,
-        builder: (context, child, value) {
-          return Dash(value: value);
-        });
+      tween: 0.0.tweenTo(1.0),
+      duration: 300.milliseconds,
+      builder: (context, child, value) {
+        return Dash(value: value);
+      },
+    );
   }
 }
 
 class Dash extends StatelessWidget {
+  const Dash({required this.value, super.key});
   final double value;
-
-  const Dash({required this.value});
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.0,
-      child: Container(
-        child: CustomPaint(
-          painter: DashPainter(value: value),
-        ),
+      child: CustomPaint(
+        painter: DashPainter(value: value),
       ),
     );
   }
@@ -39,9 +39,8 @@ class Dash extends StatelessWidget {
 final Paint opaque = Paint()..filterQuality = FilterQuality.medium;
 
 class DashPainter extends CustomPainter {
-  final double value;
-
   const DashPainter({required this.value});
+  final double value;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -102,8 +101,8 @@ class MultiDashPainter extends CustomPainter {
       length *= size.width;
       final scale = length / dashWidth;
 
-      final anchorX = dashWidth / 2;
-      final anchorY = dashHeight / 2;
+      const anchorX = dashWidth / 2;
+      const anchorY = dashHeight / 2;
       final rotation = 0.3 + 0.2 * randomAngle.nextDouble();
       final scos = cos(rotation) * scale;
       final ssin = sin(rotation) * scale;
@@ -117,16 +116,17 @@ class MultiDashPainter extends CustomPainter {
     });
 
     final dashFrame = paintDash(value);
-    canvas.clipRect(Offset.zero & size);
-    canvas.drawRawAtlas(
-      dashFrame,
-      rstTransforms,
-      rects,
-      null,
-      BlendMode.srcOver,
-      null,
-      opaque,
-    );
+    canvas
+      ..clipRect(Offset.zero & size)
+      ..drawRawAtlas(
+        dashFrame,
+        rstTransforms,
+        rects,
+        null,
+        BlendMode.srcOver,
+        null,
+        opaque,
+      );
   }
 
   @override

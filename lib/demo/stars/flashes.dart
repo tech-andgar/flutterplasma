@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 
 class Flashes extends StatelessWidget {
+  const Flashes({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return CustomPaint(
-        painter: _Painter(),
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return CustomPaint(
+          painter: _Painter(),
+        );
+      },
+    );
   }
 }
 
@@ -27,8 +31,9 @@ class _Painter extends CustomPainter {
       final paint = Paint()
         ..strokeWidth = size.width * 0.1 * (1 + 0.1 * random.nextDouble())
         ..blendMode = BlendMode.srcOver
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 20)
-        ..color = Color(0xFFD987EB).withOpacity(0.3 * random.nextDouble());
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20)
+        ..color =
+            const Color(0xFFD987EB).withOpacity(0.3 * random.nextDouble());
 
       (2 + random.nextInt(6)).times(() {
         final target = Offset(

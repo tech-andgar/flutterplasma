@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ParticlesPainter extends CustomPainter {
-  final double value;
-
   ParticlesPainter({required this.value});
+  final double value;
 
   @override
   void paint(Canvas canvas, Size size) {
