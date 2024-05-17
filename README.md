@@ -10,6 +10,6 @@ Flutter app demonstrating Flutter web rendering.
 - `/showroom/:index`: Jump to specific Show Room example
 
 Example: 
-- https://hostname/nocredits
-- https://hostname/showroom
-- https://hostname/showroom/5
+- [https://tech-andgar.github.io/flutterplasma/](https://tech-andgar.github.io/flutterplasma/)
+- [https://tech-andgar.github.io/flutterplasma/showroom](https://tech-andgar.github.io/flutterplasma/showroom)
+- [https://tech-andgar.github.io/flutterplasma/showroom/5](https://tech-andgar.github.io/flutterplasma/showroom/5)
