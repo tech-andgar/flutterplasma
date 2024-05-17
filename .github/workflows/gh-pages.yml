@@ -32,7 +32,7 @@ jobs:
         run: flutter pub get
 
       - name: Build
-        run: flutter build web --release --wasm --base-href "/flutterplasma/"
+        run: flutter build web --release --wasm
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
