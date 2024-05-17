@@ -10,13 +10,14 @@ class CachingBuilder<V> extends StatefulWidget {
   const CachingBuilder({
     required this.cacheKey,
     required this.builder,
+    super.key,
   });
 
   final V cacheKey;
   final WidgetBuilder builder;
 
   @override
-  _CachingBuilderState<V> createState() => _CachingBuilderState<V>();
+  State<CachingBuilder<V>> createState() => _CachingBuilderState<V>();
 }
 
 class _CachingBuilderState<V> extends State<CachingBuilder<V>> {

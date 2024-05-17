@@ -9,30 +9,29 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ShatterScene extends StatefulWidget {
+  const ShatterScene({super.key, this.builder});
   final Widget Function(BuildContext context, void Function() startScatter)?
       builder;
 
-  ShatterScene({this.builder});
-
   @override
-  _ShatterSceneState createState() => _ShatterSceneState();
+  State<ShatterScene>  createState() => _ShatterSceneState();
 }
 
 class _ShatterSceneState extends State<ShatterScene> {
-  var showAnimation = false;
+  bool showAnimation = false;
 
   final _key = GlobalKey();
 
   MemoryImage? memoryImage;
 
-  var useFallback = false;
+  bool useFallback = false;
 
   late List<List<Offset>> parts;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _recordImage());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _recordImage());
   }
 
   @override
@@ -42,7 +41,10 @@ class _ShatterSceneState extends State<ShatterScene> {
         children: [
           if (memoryImage != null)
             Positioned.fill(
-              child: Opacity(opacity: 0.0, child: Image(image: memoryImage!)),
+              child: Opacity(
+                opacity: 0.0,
+                child: Image(image: memoryImage!),
+              ),
             ),
           Positioned.fill(
             child: RepaintBoundary(
@@ -55,26 +57,30 @@ class _ShatterSceneState extends State<ShatterScene> {
     }
 
     return PlayAnimation<double>(
-        tween: 0.0.tweenTo(1.0),
-        duration: 1200.milliseconds,
-        curve: Curves.easeInSine,
-        builder: (context, child, value) {
-          return Stack(
-            children: parts
-                .map((part) => Positioned.fill(
-                        child: AnimatedShatter(
-                      points: part,
-                      progress: value,
-                      child: !useFallback
-                          ? Image(image: memoryImage!)
-                          : widget.builder!(context, () {}),
-                    )))
-                .toList(),
-          );
-        });
+      tween: 0.0.tweenTo(1.0),
+      duration: 1200.milliseconds,
+      curve: Curves.easeInSine,
+      builder: (context, child, value) {
+        return Stack(
+          children: parts
+              .map(
+                (part) => Positioned.fill(
+                  child: AnimatedShatter(
+                    points: part,
+                    progress: value,
+                    child: !useFallback
+                        ? Image(image: memoryImage!)
+                        : widget.builder!(context, () {}),
+                  ),
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
   }
 
-  void _recordImage() async {
+  Future<void> _recordImage() async {
     try {
       final boundary =
           _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -103,15 +109,15 @@ class _ShatterSceneState extends State<ShatterScene> {
 }
 
 class AnimatedShatter extends StatelessWidget {
-  final double progress;
-  final List<Offset> points;
-  final Widget child;
-
-  AnimatedShatter({
+  const AnimatedShatter({
     required this.progress,
     required this.points,
     required this.child,
+    super.key,
   });
+  final double progress;
+  final List<Offset> points;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -120,47 +126,51 @@ class AnimatedShatter extends StatelessWidget {
       (points[0].dy + points[1].dy + points[2].dy) / 3.0,
     );
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final alignment = Alignment(-1 + center.dx * 2, -1 + center.dy * 2);
-      return Transform.translate(
-        offset: Offset(0, progress * constraints.maxHeight * 1.2),
-        child: Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.01)
-            ..rotateZ((alignment.x < 0 ? -1 : 1) * 0.4 * progress)
-            ..rotateX((alignment.x < 0 ? -1 : 1) * 0.3 * progress)
-            ..rotateY((alignment.x < 0 ? -1 : 1) * 0.2 * progress),
-          alignment: alignment,
-          child: Transform.scale(
-            scale: 1 - 0.7 * progress,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final alignment = Alignment(-1 + center.dx * 2, -1 + center.dy * 2);
+        return Transform.translate(
+          offset: Offset(0, progress * constraints.maxHeight * 1.2),
+          child: Transform(
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.01)
+              ..rotateZ((alignment.x < 0 ? -1 : 1) * 0.4 * progress)
+              ..rotateX((alignment.x < 0 ? -1 : 1) * 0.3 * progress)
+              ..rotateY((alignment.x < 0 ? -1 : 1) * 0.2 * progress),
             alignment: alignment,
-            child: ClipPath(
-              clipper: PolygonClipper(points: points),
-              child: child,
+            child: Transform.scale(
+              scale: 1 - 0.7 * progress,
+              alignment: alignment,
+              child: ClipPath(
+                clipper: PolygonClipper(points: points),
+                child: child,
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
 class PolygonClipper extends CustomClipper<Path> {
-  final List<Offset> points;
-
   PolygonClipper({required this.points});
+  final List<Offset> points;
 
   @override
   Path getClip(Size size) {
     return Path()
       ..addPolygon(
-          points
-              .map((relativeOffset) => Offset(
-                    relativeOffset.dx * size.width,
-                    relativeOffset.dy * size.height,
-                  ))
-              .toList(),
-          true);
+        points
+            .map(
+              (relativeOffset) => Offset(
+                relativeOffset.dx * size.width,
+                relativeOffset.dy * size.height,
+              ),
+            )
+            .toList(),
+        true,
+      );
   }
 
   @override
@@ -172,8 +182,8 @@ class PolygonStripGenerator {
     final random = Random(2);
 
     var triangles = [
-      Triangle(Offset(0, 0), Offset(0, 1), Offset(1, 0)),
-      Triangle(Offset(1, 1), Offset(0, 1), Offset(1, 0)),
+      const Triangle(Offset(0, 0), Offset(0, 1), Offset(1, 0)),
+      const Triangle(Offset(1, 1), Offset(0, 1), Offset(1, 0)),
     ];
 
     0.until(complexity).forEach((_) {
@@ -185,11 +195,10 @@ class PolygonStripGenerator {
 }
 
 class Triangle {
+  const Triangle(this.p1, this.p2, this.p3);
   final Offset p1;
   final Offset p2;
   final Offset p3;
-
-  const Triangle(this.p1, this.p2, this.p3);
 
   List<Triangle> shatter(Random random) {
     final m12 = _average2(p1, p2, 0.4 + 0.2 * random.nextDouble());
@@ -227,7 +236,13 @@ class Triangle {
   }
 
   Offset _average3(
-      Offset p1, Offset p2, Offset p3, double w1, double w2, double w3) {
+    Offset p1,
+    Offset p2,
+    Offset p3,
+    double w1,
+    double w2,
+    double w3,
+  ) {
     final center = Offset(
       (p1.dx + p2.dx + p3.dx) / 3.0,
       (p1.dy + p2.dy + p3.dy) / 3.0,

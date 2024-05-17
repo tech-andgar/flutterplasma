@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../showroom/gesture_detector_with_click_hover.dart';
 import '../intro/large_text.dart';
 
 class StartPage extends StatelessWidget {
+  const StartPage({required this.pressedStart, super.key});
   final Function() pressedStart;
-
-  const StartPage({required this.pressedStart});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class StartPage extends StatelessWidget {
               padding: const EdgeInsets.all(32.0),
               child: Center(
                 child: Container(
-                  constraints: BoxConstraints.expand(width: 700),
+                  constraints: const BoxConstraints.expand(width: 700),
                   child: Center(
                     child: _buildPageContent(),
                   ),
@@ -41,21 +40,24 @@ class StartPage extends StatelessWidget {
         SelectableText('Flutter Plasma', style: h1()),
         Container(height: 24),
         SelectableText(
-            'This demo shows the capabilities of Flutter in the web.',
-            style: normal()),
+          'This demo shows the capabilities of Flutter in the web.',
+          style: normal(),
+        ),
         Container(height: 16),
         _Li(
-            child: SelectableText.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: 'This is ', style: normal()),
-              TextSpan(text: 'not a video', style: bold()),
-              TextSpan(
+          child: SelectableText.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'This is ', style: normal()),
+                TextSpan(text: 'not a video', style: bold()),
+                TextSpan(
                   text: '. No prebuilt visual assets are used.',
-                  style: normal()),
-            ],
+                  style: normal(),
+                ),
+              ],
+            ),
           ),
-        )),
+        ),
         Container(height: 16),
         _Li(
           child: SelectableText('Turn on your sound.', style: normal()),
@@ -70,9 +72,10 @@ class StartPage extends StatelessWidget {
             children: [
               TextSpan(text: 'Seizure warning', style: bold()),
               TextSpan(
-                  text:
-                      ': Don\'t watch this demo if you suffer from photosensitive epilepsy.',
-                  style: normal()),
+                text:
+                    ': Don\'t watch this demo if you suffer from photosensitive epilepsy.',
+                style: normal(),
+              ),
             ],
           ),
         ),
@@ -87,7 +90,7 @@ class StartPage extends StatelessWidget {
             ),
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Container(
           alignment: Alignment.center,
           child: GestureDetectorWithClickHover(
@@ -97,57 +100,61 @@ class StartPage extends StatelessWidget {
               child: Text('View source code', style: link()),
             ),
           ),
-        )
+        ),
       ],
     );
   }
 
-  TextStyle normal() => TextStyle(fontSize: 16, color: Colors.black);
+  TextStyle normal() => const TextStyle(fontSize: 16, color: Colors.black);
 
   TextStyle link() => TextStyle(
-      fontSize: 16,
-      color: 'blue'.toColor(),
-      decoration: TextDecoration.underline);
+        fontSize: 16,
+        color: 'blue'.toColor(),
+        decoration: TextDecoration.underline,
+      );
 
   TextStyle bold() => normal().copyWith(fontWeight: FontWeight.bold);
 
-  TextStyle h1() =>
-      TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black);
+  TextStyle h1() => const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      );
 
   Positioned _buildPreload() {
-    return Positioned.fill(
-        child: Opacity(
-      opacity: 0.0,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          LargeText(
-            'a',
-            textSize: 16,
-            bold: false,
-          ),
-          LargeText(
-            'b',
-            textSize: 16,
-            bold: true,
-          ),
-        ],
+    return const Positioned.fill(
+      child: Opacity(
+        opacity: 0.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LargeText(
+              'a',
+              textSize: 16,
+              bold: false,
+            ),
+            LargeText(
+              'b',
+              textSize: 16,
+              bold: true,
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
-  void viewSourceCode() async {
-    var url = 'https://github.com/felixblaschke/flutterplasma/';
-    if (await canLaunch(url)) {
-      await launch(url);
+  Future<void> viewSourceCode() async {
+    const url = 'https://github.com/felixblaschke/flutterplasma/';
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     }
   }
 }
 
 class _Li extends StatelessWidget {
-  final Widget child;
-
   const _Li({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -157,9 +164,10 @@ class _Li extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 6.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(3.5))),
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(3.5)),
+            ),
             width: 7,
             height: 7,
           ),
@@ -170,22 +178,21 @@ class _Li extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: child,
           ),
-        )
+        ),
       ],
     );
   }
 }
 
 class _Background extends StatelessWidget {
-  final Widget child;
-
   const _Background({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints.expand(),
-      decoration: BoxDecoration(
+      constraints: const BoxConstraints.expand(),
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           tileMode: TileMode.mirror,
           begin: Alignment.topLeft,

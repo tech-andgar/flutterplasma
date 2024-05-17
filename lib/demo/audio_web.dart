@@ -1,11 +1,11 @@
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 
 import 'audio.dart';
 
 class AudioPlayerImpl implements AudioPlayer {
-  AudioPlayerImpl(this.src) : _audioElement = html.AudioElement(src);
+  AudioPlayerImpl(this.src) : _audioElement = web.HTMLAudioElement()..src = src;
 
-  final html.AudioElement _audioElement;
+  final web.HTMLAudioElement _audioElement;
   final String src;
 
   @override
@@ -15,9 +15,10 @@ class AudioPlayerImpl implements AudioPlayer {
 
   @override
   Future<void> play() async {
-    await _audioElement.play();
+    _audioElement.play();
   }
 
   @override
-  Duration get position => Duration(milliseconds: (_audioElement.currentTime * 1000).toInt());
+  Duration get position =>
+      Duration(milliseconds: (_audioElement.currentTime * 1000).toInt());
 }

@@ -6,8 +6,10 @@ import 'showroom/show_room.dart';
 import 'widget_warmup.dart';
 
 class RoutedApp extends StatefulWidget {
+  const RoutedApp({super.key});
+
   @override
-  _RoutedAppState createState() => _RoutedAppState();
+  State<RoutedApp>  createState() => _RoutedAppState();
 }
 
 class _RoutedAppState extends State<RoutedApp> {
@@ -25,10 +27,6 @@ class _RoutedAppState extends State<RoutedApp> {
 }
 
 class AppRoutePath {
-  final String _route;
-  var showroomIndex = 0;
-  var demoShowCredits = true;
-
   AppRoutePath.demo({bool credits = true})
       : _route = 'demo',
         demoShowCredits = credits;
@@ -38,6 +36,9 @@ class AppRoutePath {
         showroomIndex = index;
 
   AppRoutePath.unknown() : _route = 'unknown';
+  final String _route;
+  int showroomIndex = 0;
+  bool demoShowCredits = true;
 
   bool get isDemo => _route == 'demo';
 
@@ -49,8 +50,9 @@ class AppRoutePath {
 class AppRouteInformationParser extends RouteInformationParser<AppRoutePath> {
   @override
   Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
+    RouteInformation routeInformation,
+  ) async {
+    final uri = routeInformation.uri;
 
     if (uri.pathSegments.isEmpty) {
       return AppRoutePath.demo();
@@ -62,7 +64,7 @@ class AppRouteInformationParser extends RouteInformationParser<AppRoutePath> {
 
     if (uri.pathSegments[0] == 'showroom') {
       if (uri.pathSegments.length == 2) {
-        var index = uri.pathSegments[1].toInt();
+        final index = uri.pathSegments[1].toInt();
         if (index != null) {
           return AppRoutePath.showroom(index);
         }
@@ -75,36 +77,37 @@ class AppRouteInformationParser extends RouteInformationParser<AppRoutePath> {
   }
 
   @override
-  RouteInformation restoreRouteInformation(AppRoutePath path) {
-    if (path.isDemo) {
-      if (path.demoShowCredits) {
-        return RouteInformation(location: '/');
+  RouteInformation restoreRouteInformation(AppRoutePath configuration) {
+    if (configuration.isDemo) {
+      if (configuration.demoShowCredits) {
+        return RouteInformation(uri: Uri.parse('/'));
       } else {
-        return RouteInformation(location: '/nocredits');
+        return RouteInformation(uri: Uri.parse('/nocredits'));
       }
     }
-    if (path.isShowroom) {
-      if (path.showroomIndex > 0) {
-        return RouteInformation(location: '/showroom/${path.showroomIndex}');
+    if (configuration.isShowroom) {
+      if (configuration.showroomIndex > 0) {
+        return RouteInformation(
+          uri: Uri.parse('/showroom/${configuration.showroomIndex}'),
+        );
       }
-      return RouteInformation(location: '/showroom');
+      return RouteInformation(uri: Uri.parse('/showroom'));
     }
-    return RouteInformation(location: '/unknown');
+    return RouteInformation(uri: Uri.parse('/unknown'));
   }
 }
 
 class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
+  AppRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
   @override
   final GlobalKey<NavigatorState> navigatorKey;
 
-  AppRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
-
-  var showDemo = true;
-  var demoShowCredits = true;
-  var showShowroom = false;
-  var showroomIndex = 0;
-  var showUnknown = false;
+  bool showDemo = true;
+  bool demoShowCredits = true;
+  bool showShowroom = false;
+  int showroomIndex = 0;
+  bool showUnknown = false;
 
   @override
   AppRoutePath get currentConfiguration {
@@ -125,7 +128,7 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
         pages: [
           if (showDemo)
             MaterialPage<DemoScreen>(
-              key: ValueKey('Demo'),
+              key: const ValueKey('Demo'),
               child: DemoScreen(
                 showCredits: demoShowCredits,
                 onComplete: _handleDemoCompleted,
@@ -133,19 +136,21 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
             ),
           if (showShowroom)
             MaterialPage<Scaffold>(
-              key: ValueKey('ShowRoom'),
+              key: const ValueKey('ShowRoom'),
               child: Scaffold(
-                  body: ShowRoom(
-                      index: showroomIndex,
-                      onIndexChange: _handleShowroomIndexChange)),
+                body: ShowRoom(
+                  index: showroomIndex,
+                  onIndexChange: _handleShowroomIndexChange,
+                ),
+              ),
             ),
           if (showUnknown)
-            MaterialPage<Scaffold>(
+            const MaterialPage<Scaffold>(
               key: ValueKey('Unknown'),
               child: Scaffold(body: Center(child: Text('404'))),
-            )
+            ),
         ],
-        onPopPage: (route, dynamic result) {
+        onPopPage: (route, result) {
           if (!route.didPop(result)) {
             return false;
           }
@@ -158,12 +163,12 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    showDemo = path.isDemo;
-    demoShowCredits = path.demoShowCredits;
-    showShowroom = path.isShowroom;
-    showUnknown = path.isUnknown;
-    showroomIndex = path.showroomIndex;
+  Future<void> setNewRoutePath(AppRoutePath configuration) async {
+    showDemo = configuration.isDemo;
+    demoShowCredits = configuration.demoShowCredits;
+    showShowroom = configuration.isShowroom;
+    showUnknown = configuration.isUnknown;
+    showroomIndex = configuration.showroomIndex;
   }
 
   void _handleDemoCompleted() {

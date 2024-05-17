@@ -18,13 +18,12 @@ import '../demo/stars/stars.dart';
 import '../showroom/select.dart';
 
 class ShowRoom extends StatefulWidget {
+  const ShowRoom({required this.index, required this.onIndexChange, super.key});
   final int index;
   final Function(int) onIndexChange;
 
-  const ShowRoom({required this.index, required this.onIndexChange});
-
   @override
-  _ShowRoomState createState() => _ShowRoomState();
+  State<ShowRoom> createState() => _ShowRoomState();
 }
 
 class _ShowRoomState extends State<ShowRoom> {
@@ -33,7 +32,7 @@ class _ShowRoomState extends State<ShowRoom> {
 
   void changeWidgetFromOutside(int index) {
     setState(() {
-      var allWidgets = WIDGETS.entries.toList();
+      final allWidgets = widgets.entries.toList();
       try {
         selectedItem = allWidgets[widget.index].key;
         displayedWidget = allWidgets[widget.index].value();
@@ -45,8 +44,8 @@ class _ShowRoomState extends State<ShowRoom> {
   }
 
   void changeWidgetInternally(String key) {
-    var allWidgets = WIDGETS.entries.toList();
-    var index = allWidgets.indexWhere((element) => element.key == key);
+    final allWidgets = widgets.entries.toList();
+    final index = allWidgets.indexWhere((element) => element.key == key);
     widget.onIndexChange(index);
   }
 
@@ -64,61 +63,64 @@ class _ShowRoomState extends State<ShowRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      var smallScreen = constraints.maxWidth < 700;
-      var spacing = smallScreen ? 0.0 : 32.0;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final smallScreen = constraints.maxWidth < 700;
+        final spacing = smallScreen ? 0.0 : 32.0;
 
-      return Container(
-        color: '#333333'.toColor(),
-        child: Column(
-          children: [
-            Container(
-              height: 50.0,
-              padding: EdgeInsets.symmetric(horizontal: spacing),
-              color: Colors.black.withOpacity(0.3),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: smallScreen ? 16 : 0),
-                    child: LargeText(
-                      'ShowRoom',
-                      bold: true,
-                      textSize: smallScreen ? 14 : 18,
+        return Container(
+          color: '#333333'.toColor(),
+          child: Column(
+            children: [
+              Container(
+                height: 50.0,
+                padding: EdgeInsets.symmetric(horizontal: spacing),
+                color: Colors.black.withOpacity(0.3),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: smallScreen ? 16 : 0),
+                      child: LargeText(
+                        'ShowRoom',
+                        bold: true,
+                        textSize: smallScreen ? 14 : 18,
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  PropertySelect(
-                    value: selectedItem,
-                    onChanged: (newValue) {
-                      changeWidgetInternally(newValue!);
-                    },
-                    options: WIDGETS.keys.toList(),
-                  )
-                ],
+                    const Spacer(),
+                    PropertySelect(
+                      value: selectedItem,
+                      onChanged: (newValue) {
+                        changeWidgetInternally(newValue!);
+                      },
+                      options: widgets.keys.toList(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
+              Expanded(
                 flex: 1,
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.all(spacing),
                     child: displayedWidget,
                   ),
-                ))
-          ],
-        ),
-      );
-    });
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
-var WIDGETS = {
-  'Pick a widget here...': () => _introText(),
-  'Layout A': () => _square(LayoutA()),
-  'Layout B': () => _square(LayoutB()),
-  'Layout C': () => _square(LayoutC()),
-  'Layout D': () => _square(LayoutD()),
-  'Layout Wall': () => LayoutWall(),
+Map<String, Widget Function()> widgets = {
+  'Pick a widget here...': _introText,
+  'Layout A': () => _square(const LayoutA()),
+  'Layout B': () => _square(const LayoutB()),
+  'Layout C': () => _square(const LayoutC()),
+  'Layout D': () => _square(const LayoutD()),
+  'Layout Wall': () => const LayoutWall(),
   'Plasma 1 (blue)': () =>
       FancyPlasmaWidget1(color: Colors.blue.withOpacity(0.4)),
   'Plasma 1 (red)': () =>
@@ -135,13 +137,13 @@ var WIDGETS = {
       FancyPlasmaWidget2(color: Colors.yellow.withOpacity(0.4)),
   'Plasma 2 (green)': () =>
       FancyPlasmaWidget2(color: Colors.green.withOpacity(0.4)),
-  'Plasma 3': () => OtherPlasma1(),
-  'Plasma 4': () => OtherPlasma2(),
-  'Plasma 5': () => FancyPlasma2(),
-  'Sky': () => Sky(),
-  'Dash': () => DashAnimation(),
-  'Stars': () => Stars(),
-  'Outro': () => Outro(),
+  'Plasma 3': () => const OtherPlasma1(),
+  'Plasma 4': () => const OtherPlasma2(),
+  'Plasma 5': () => const FancyPlasma2(),
+  'Sky': () => const Sky(),
+  'Dash': () => const DashAnimation(),
+  'Stars': () => const Stars(),
+  'Outro': () => const Outro(),
 };
 
 Widget _square(Widget child) => AspectRatio(
@@ -150,8 +152,8 @@ Widget _square(Widget child) => AspectRatio(
     );
 
 Widget _introText() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
+  return const Padding(
+    padding: EdgeInsets.all(16.0),
     child: LargeText(
       'Use the select box on the top right to navigate between screens.',
       textSize: 16,
@@ -160,5 +162,5 @@ Widget _introText() {
 }
 
 Widget Function() stringToWidgetBuilder(String string) {
-  return WIDGETS.entries.firstWhere((w) => w.key == string).value;
+  return widgets.entries.firstWhere((w) => w.key == string).value;
 }

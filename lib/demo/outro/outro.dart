@@ -6,39 +6,40 @@ import '../caching_builder.dart';
 import '../intro/large_text.dart';
 
 class Outro extends StatelessWidget {
+  const Outro({super.key, this.onComplete});
   final VoidCallback? onComplete;
-
-  Outro({this.onComplete});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      var fontSize = constraints.maxHeight * 0.04;
-      var tween = _createTween(constraints);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final fontSize = constraints.maxHeight * 0.04;
+        final tween = _createTween(constraints);
 
-      return CustomAnimation<TimelineValue<_P>>(
-        tween: tween,
-        duration: tween.duration,
-        builder: (context, child, value) {
-          return Stack(
-            children: [
-              /* // Background effect disabled to improve performance
+        return CustomAnimation<TimelineValue<_P>>(
+          tween: tween,
+          duration: tween.duration,
+          builder: (context, child, value) {
+            return Stack(
+              children: [
+                /* // Background effect disabled to improve performance
               Positioned.fill(
                   child: Opacity(
                       opacity: value.get(_P.opacityBackground),
                       child: _Background())),
                */
-              Positioned.fill(child: _buildScrollingText(value, fontSize)),
-            ],
-          );
-        },
-        animationStatusListener: (status) {
-          if (status == AnimationStatus.completed) {
-            onComplete!();
-          }
-        },
-      );
-    });
+                Positioned.fill(child: _buildScrollingText(value, fontSize)),
+              ],
+            );
+          },
+          animationStatusListener: (status) {
+            if (status == AnimationStatus.completed) {
+              onComplete!();
+            }
+          },
+        );
+      },
+    );
   }
 
   ClipRect _buildScrollingText(TimelineValue<_P> value, double fontSize) {
@@ -73,28 +74,36 @@ class Outro extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildSpacer(fontSize),
-                  _buildText('directed by', 'Felix Blaschke\nMandy Blaschke',
-                      fontSize),
+                  _buildText(
+                    'directed by',
+                    'Felix Blaschke\nMandy Blaschke',
+                    fontSize,
+                  ),
                   _buildSpacer(fontSize),
                   _buildText('Artwork by', 'Mandy Blaschke', fontSize),
                   _buildSpacer(fontSize),
                   _buildText('Made with', 'Flutter', fontSize),
                   _buildSpacer(fontSize),
                   _buildText(
-                      'animation package used', 'simple_animations', fontSize),
+                    'animation package used',
+                    'simple_animations',
+                    fontSize,
+                  ),
                   _buildSpacer(fontSize),
                   _buildText('Special thanks to', 'The Flutter Team', fontSize),
                   Container(
                     height: fontSize * 0.2,
                   ),
-                  LargeText('for creating this awesome technology.',
-                      textSize: fontSize * 0.43),
+                  LargeText(
+                    'for creating this awesome technology.',
+                    textSize: fontSize * 0.43,
+                  ),
                 ],
               ),
             );
           },
         ),
-      )
+      ),
     ];
   }
 
@@ -105,44 +114,48 @@ class Outro extends StatelessWidget {
   }
 
   Widget _buildText(String title, String content, double fontSize) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          LargeText(
-            title.toUpperCase(),
-            textSize: fontSize * 0.5,
-            bold: true,
-          ),
-          Container(height: fontSize * 0.5),
-          LargeText(content, textSize: fontSize),
-        ],
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LargeText(
+              title.toUpperCase(),
+              textSize: fontSize * 0.5,
+              bold: true,
+            ),
+            Container(height: fontSize * 0.5),
+            LargeText(content, textSize: fontSize),
+          ],
+        );
+      },
+    );
   }
 }
 
 enum _P { scroll, opacityOther, opacityBackground }
 
 TimelineTween<_P> _createTween(BoxConstraints constraints) {
-  var tween = TimelineTween<_P>();
+  final tween = TimelineTween<_P>();
 
   tween
       .addScene(begin: 2.seconds, duration: 700.milliseconds)
-      .animate(_P.opacityOther, tween: (0.0).tweenTo(1.0));
+      .animate(_P.opacityOther, tween: 0.0.tweenTo(1.0));
 
   tween
       .addScene(begin: 1.seconds, duration: 300.milliseconds)
-      .animate(_P.opacityBackground, tween: (0.0).tweenTo(1.0));
+      .animate(_P.opacityBackground, tween: 0.0.tweenTo(1.0));
 
-  tween.addScene(begin: 2.seconds, end: 25.seconds).animate(_P.scroll,
-      tween:
-          (constraints.maxHeight * 0.45).tweenTo(-constraints.maxHeight * 1.6));
+  tween.addScene(begin: 2.seconds, end: 25.seconds).animate(
+        _P.scroll,
+        tween: (constraints.maxHeight * 0.45)
+            .tweenTo(-constraints.maxHeight * 1.6),
+      );
 
   tween
       .addScene(end: 25.seconds, duration: 700.milliseconds)
-      .animate(_P.opacityBackground, tween: (1.0).tweenTo(0.0))
-      .animate(_P.opacityOther, tween: (1.0).tweenTo(0.0));
+      .animate(_P.opacityBackground, tween: 1.0.tweenTo(0.0))
+      .animate(_P.opacityOther, tween: 1.0.tweenTo(0.0));
 
   return tween;
 }
@@ -151,11 +164,11 @@ class _Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xff092452),
         backgroundBlendMode: BlendMode.srcOver,
       ),
-      child: PlasmaRenderer(
+      child: const PlasmaRenderer(
         type: PlasmaType.infinity,
         particles: 10,
         color: Color(0xd0010101),
