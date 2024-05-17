@@ -12,13 +12,15 @@ dependencies:
   flutter:
     sdk: flutter
   supercharged: ^2.1.1
-  simple_animations: ^3.2.0
-  flutter_lints: ^1.0.4
+  simple_animations: ^5.0.2
   url_strategy: ^0.2.0
   url_launcher: ^6.2.6
   web: ^0.5.1
+  sa3_liquid: ^1.0.1
+  sa4_migration_kit: ^1.0.0
 
 dev_dependencies:
+  flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
   integration_test:

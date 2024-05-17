@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:simple_animations/simple_animations.dart';
+import 'package:sa4_migration_kit/sa4_migration_kit.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ShatterScene extends StatefulWidget {
