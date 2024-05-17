@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:simple_animations/simple_animations.dart';
+import 'package:sa4_migration_kit/sa4_migration_kit.dart';
 import 'package:supercharged/supercharged.dart';
 
 import '../demo_screen.dart';

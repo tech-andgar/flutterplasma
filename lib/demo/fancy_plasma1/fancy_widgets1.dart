@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_animations/simple_animations.dart';
+import 'package:sa3_liquid/sa3_liquid.dart';
 
 class FancyPlasmaWidget2 extends StatelessWidget {
   const FancyPlasmaWidget2({
